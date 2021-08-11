@@ -1,0 +1,2 @@
+[global.databases]
+sqlite_logs = { url = "/Users/khalid/prog/rust_prog/robot-ideas/db.sqlite" }
