@@ -12,7 +12,10 @@ use crate::schema::users_table::dsl::*;
 pub fn create_user(new_user: NewUser, conn: &MysqlConnection) -> QueryResult<Users> {
     diesel::insert_into(users_table::table)
         .values(&new_user)
-        .get_result(conn)
+        .execute(conn)
+        .expect("Error creating user");
+
+    users_table.order(id.desc()).first(conn)
 }
 
 pub fn show_users(connection: &MysqlConnection) -> QueryResult<Vec<Users>> {
@@ -27,7 +30,10 @@ pub fn get_users(user_id: i32, connection: &MysqlConnection) -> QueryResult<User
 pub fn update_user(user_id: i32, user: Users, connection: &MysqlConnection) -> QueryResult<Users> {
     diesel::update(users_table::table.find(user_id))
         .set(&user)
-        .get_result(connection)
+        .execute(connection)
+        .expect("Error updating user");
+
+    users_table.find(user.id).get_result::<Users>(connection)
 }
 
 pub fn delete_user(user_id: i32, connection: &MysqlConnection) -> QueryResult<usize> {

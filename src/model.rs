@@ -1,7 +1,5 @@
 #![allow(proc_macro_derive_resolution_fallback)]
 
-use serde::{Serialize, Deserialize};
-
 use crate::schema::ideas;
 use crate::schema::users_table;
 
@@ -25,6 +23,12 @@ pub struct NewIdea {
 #[derive(Queryable, AsChangeset, Serialize, Deserialize, Debug)]
 #[table_name = "users_table"]
 pub struct Users {
+    pub id: i32,
+    pub username: String,
+}
+
+#[derive(Queryable, Serialize, Deserialize)]
+pub struct User_Model{
     pub id: i32,
     pub username: String,
 }

@@ -3,7 +3,7 @@ use std::env;
 use diesel::result::Error;
 use rocket::http::Status;
 use rocket::response::status;
-use rocket_contrib::json::Json;
+use rocket::serde::json::Json;
 
 use crate::connection::DbConn;
 use crate::model::Users;
@@ -11,12 +11,14 @@ use crate::model::NewUser;
 use crate::repository;
 
 #[get("/")]
-pub fn all_users(connection: DbConn) -> Result<Json<Vec<Users>>, Status> {
-    repository::show_users(&connection)
-        .map(|post| Json(post))
-        .map_err(|error| error_status(error))
-}
+pub fn all_users(connection: DbConn) -> Json<Users> {
+    Json(Users{ id: 12, username: "bobby".to_string()})
 
+    //repository::show_users(&connection)
+    //    .map(|post| Json(post))
+    //    .map_err(|error| error_status(error))
+}
+/*
 #[post("/", format="application/json", data="<new_user>")]
 pub fn create_user(new_user: Json<NewUser>, connection: DbConn) -> Result<status::Created<Json<Users>>, Status> {
     println!("here 0 {}", &new_user.username);
@@ -48,9 +50,9 @@ pub fn delete_post(id: i32, connection: DbConn) -> Result<status::NoContent, Sta
 
 fn user_created(post: Users) -> status::Created<Json<Users>> {
       println!("here final");
-      status::Created(
-          format!("{host}:{port}/post/{id}", host = host(), port = port(), id = post.id).to_string(),
-          Some(Json(post)))
+      status::Created::new(
+          format!("{host}:{port}/post/{id}", host = host(), port = port(), id = post.id).to_string())
+          .body(Json(post))
 }
 
 fn host() -> String {
@@ -60,10 +62,11 @@ fn host() -> String {
 fn port() -> String {
       env::var("ROCKET_PORT").expect("ROCKET_PORT must be set")
 }
-
+*/
 fn error_status(error: Error) -> Status {
     match error {
         Error::NotFound => Status::NotFound,
         _ => Status::InternalServerError
     }
 }
+

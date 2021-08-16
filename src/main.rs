@@ -5,6 +5,7 @@ extern crate r2d2;
 extern crate r2d2_diesel;
 #[macro_use] extern crate rocket;
 extern crate rocket_contrib;
+#[macro_use] extern crate serde;
 
 use dotenv::dotenv;
 
@@ -15,7 +16,8 @@ mod repository;
 mod handler;
 mod model;
 
-fn main() {
+#[launch]
+fn rocket() -> _ {
       dotenv().ok();
-      router::create_routes();
+      router::create_routes()
 }
